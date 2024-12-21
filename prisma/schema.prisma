@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model File {
+  id          Int       @id @default(autoincrement())
+  filename    String
+  path        String
+  createdAt   DateTime  @default(now())
+  processed   Boolean   @default(false)
+  sheets      Sheet[]
+}
+
+model Sheet {
+  id          Int       @id @default(autoincrement())
+  name        String
+  file        File      @relation(fields: [fileId], references: [id])
+  fileId      Int
+  data        Json?     // Processed data from the sheet
+  mapping     Json?     // Column mapping configuration
+  createdAt   DateTime  @default(now())
+}
